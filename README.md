@@ -1,26 +1,32 @@
 # Catcloak
 
-[![awesome plugin](https://custom-icon-badges.demolab.com/static/v1?label=&message=awesome+plugin&color=383938&style=for-the-badge&logo=cheshire_cat_ai)](https://)  
-[![Awesome plugin](https://custom-icon-badges.demolab.com/static/v1?label=&message=Awesome+plugin&color=000000&style=for-the-badge&logo=cheshire_cat_ai)](https://)  
-[![awesome plugin](https://custom-icon-badges.demolab.com/static/v1?label=&message=awesome+plugin&color=F4F4F5&style=for-the-badge&logo=cheshire_cat_black)](https://)
+<img src="./assets/catcloak.png" width=400>
 
-Write here all the useful information about your plugin.
+[![awesome plugin](https://custom-icon-badges.demolab.com/static/v1?label=&message=awesome+plugin&color=383938&style=for-the-badge&logo=cheshire_cat_ai)](https://)
 
-This repository is the template to automate the release of official Cheshire Cat AI plugins. 
+Catcloak is a Cheshire Cat AI plugin that integrates Keycloak authentication into your Cheshire Cat instance, providing robust user management and access control.
+
+## Features
+
+- Integration with Keycloak for user authentication
+- User data mapping from Keycloak to Cheshire Cat
+- Customizable permission mapping based on Keycloak roles
+- Support for JWT token-based authentication
+
+## Configuration
+
+Configure the plugin through the Cheshire Cat admin interface or by editing the `settings.json` file:
+
+1. Set up your Keycloak connection details:
+   - `server_url`: Your Keycloak server URL
+   - `realm`: Your Keycloak realm name
+   - `client_id`: Your Keycloak client ID
+   - `client_secret`: Your Keycloak client secret
+
+2. Customize the `user_mapping` to map Keycloak user data. You can pass whatever info you want the Cheshire Cat to know about the user.
+
+3. Define the `permission_mapping` to set up role-based access control. If not defined, the user will have the base permissions.
 
 ## Usage
 
-1. Create a new repository clicking on the `Use this template` button.
-2. Clone your new repo directly in the Cat's `plugins` folder.
-3. Run the `setup.py` script:
-```bash
-python setup.py
-```
-The script will prompt you to write the name of your plugin and make an initial setup setting the name in the files.
-
-4. Start developing!
-
-> **Important**
-> A new release of your plugin is triggered every time you set a new `version` in the `plugin.json` file.
-> Please, remember to set it correctly every time you want to release an update.
-
+Once configured, the Catcloak plugin will automatically handle authentication for your Cheshire Cat instance. Users will need to provide a valid Keycloak JWT token to access protected resources.

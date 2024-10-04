@@ -1,10 +1,10 @@
 {
     "name": "Catcloak",
     "version": "0.0.1",
-    "description": "Description of catcloak.",
+    "description": "Catcloak is a plugin that allows you to authenticate users using Keycloak.",
     "author_name": "Luca Gobbi",
-    "author_url": "https://mywebsite.me",
-    "plugin_url": "https://github.com/my_name/catcloak",
-    "tags": "cat, template, example",
-    "thumb": "https://raw.githubusercontent.com/my_repo_path/catcloak.png"
+    "author_url": "https://github.com/lucagobbi",
+    "plugin_url": "https://github.com/lucagobbi/catcloak",
+    "tags": "cat, auth, keycloak, idp, oidc",
+    "thumb": "https://raw.githubusercontent.com/lucagobbi/catcloak/main/assets/catcloak.png"
 }
