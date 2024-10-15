@@ -131,8 +131,8 @@ class KeycloakAuthHandlerConfig(AuthHandlerConfig):
     realm: str = Field(..., description="The realm to use.")
     client_id: str = Field(..., description="The client ID to use.")
     client_secret: str = Field(..., description="The client secret to use.")
-    user_mapping: Dict[str, str] = Field(..., description="The mapping of user data from the token to the user model.")
-    permission_mapping: Dict[str, Any] = Field(..., description="The mapping of Keycloak roles to Cat permissions.")
+    user_mapping: Dict[str, str] = Field(..., description="The mapping of user data from the token to the user model.",  extra={"type": "TextArea"})
+    permission_mapping: Dict[str, Any] = Field(..., description="The mapping of Keycloak roles to Cat permissions.",  extra={"type": "TextArea"})
 
     model_config = ConfigDict(
         json_schema_extra={

@@ -1,6 +1,6 @@
 {
     "name": "Catcloak",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "Catcloak is a plugin that allows you to authenticate users using Keycloak.",
     "author_name": "Luca Gobbi",
     "author_url": "https://github.com/lucagobbi",
