@@ -15,7 +15,9 @@ Catcloak is a Cheshire Cat AI plugin that integrates Keycloak authentication int
 
 ## Configuration
 
-Configure the your KeycloakAuthHandlerConfig sending an HTTP PUT request to the AuthHandler endpoint specifying the following parameters:
+First of all, be sure that your Cat installation is properly secured following these [instructions](https://cheshire-cat-ai.github.io/docs/production/auth/authentication/) in the official Cheshire Cat documentation.
+
+Configure the KeycloakAuthHandlerConfig sending an HTTP PUT request to the AuthHandler endpoint specifying the following parameters:
 
 1. Keycloak connection details:
    - `server_url`: Your Keycloak server URL
