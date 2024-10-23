@@ -7,7 +7,7 @@ from cat.auth.permissions import (
 from cat.log import log
 
 from pydantic import ConfigDict, Field
-from typing import List, Type, Dict, Any
+from typing import List, Type, Dict, Any, Literal
 from keycloak import KeycloakOpenID
 from cachetools import TTLCache
 from time import time
@@ -71,7 +71,7 @@ class KeycloakAuthHandler(BaseAuthHandler):
             return None
 
     async def authorize_user_from_key(
-        self, user_id: str, api_key: str, auth_resource: AuthResource, auth_permission: AuthPermission
+        self, protocol: Literal["http", "websocket"], user_id: str, api_key: str, auth_resource: AuthResource, auth_permission: AuthPermission
     ) -> AuthUserInfo | None:
         log.debug("KeycloakAuthHandler does not support API keys.")
         return None
