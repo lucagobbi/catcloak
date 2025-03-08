@@ -11,7 +11,6 @@ from typing import List, Type, Dict, Any, Literal
 from keycloak import KeycloakOpenID
 from cachetools import TTLCache
 from time import time
-from hmac import compare_digest
 
 
 @hook(priority=0)
@@ -34,9 +33,9 @@ class KeycloakAuthHandler(BaseAuthHandler):
         self.kc_permissions = {}
         self.token_cache = TTLCache(maxsize=1000, ttl=300)
         self.user_info_cache = TTLCache(maxsize=1000, ttl=300)
-            
-    async def authorize_user_from_jwt(
-        self, token: str, auth_resource: AuthResource, auth_permission: AuthPermission
+
+    def authorize_user_from_jwt(
+            self, token: str, auth_resource: AuthResource, auth_permission: AuthPermission
     ) -> AuthUserInfo | None:
         try:
 
@@ -47,7 +46,7 @@ class KeycloakAuthHandler(BaseAuthHandler):
                     if user_info and self.has_permission(user_info, auth_resource, auth_permission):
                         return user_info
 
-            token_info = await self.keycloak_openid.a_decode_token(token)
+            token_info = self.keycloak_openid.decode_token(token)
 
             expiration = token_info['exp']
             self.token_cache[token] = (token_info, expiration)
@@ -70,15 +69,16 @@ class KeycloakAuthHandler(BaseAuthHandler):
             log.error(f"Error processing token: {e}")
             return None
 
-    async def authorize_user_from_key(
-        self, protocol: Literal["http", "websocket"], user_id: str, api_key: str, auth_resource: AuthResource, auth_permission: AuthPermission
+    def authorize_user_from_key(
+            self, protocol: Literal["http", "websocket"], user_id: str, api_key: str, auth_resource: AuthResource,
+            auth_permission: AuthPermission
     ) -> AuthUserInfo | None:
-        log.debug("KeycloakAuthHandler does not support API keys.")
+        log.warning("KeycloakAuthHandler does not support API keys.")
         return None
 
     def map_user_data(self, token_info: Dict[str, Any]) -> AuthUserInfo:
-        extra = {key: self.get_nested_value(token_info, path) 
-                 for key, path in self.user_mapping.items() 
+        extra = {key: self.get_nested_value(token_info, path)
+                 for key, path in self.user_mapping.items()
                  if key not in ["id", "name", "roles"]}
 
         return AuthUserInfo(
@@ -90,9 +90,9 @@ class KeycloakAuthHandler(BaseAuthHandler):
     def map_permissions(self, token_info: Dict[str, Any], user_info: AuthUserInfo):
         roles_path = self.user_mapping.get("roles", "realm_access.roles")
         kc_roles = self.get_nested_value(token_info, roles_path) or []
-        
+
         roles_key = tuple(sorted(kc_roles))
-        
+
         if roles_key in self.kc_permissions:
             user_info.permissions = self.kc_permissions[roles_key]
             return
@@ -104,15 +104,17 @@ class KeycloakAuthHandler(BaseAuthHandler):
                     if resource not in permissions:
                         permissions[resource] = set()
                     permissions[resource].update(perms)
-        
+
         permissions = {resource: list(perms) for resource, perms in permissions.items()}
         self.kc_permissions[roles_key] = permissions
         user_info.permissions = permissions
 
-    def has_permission(self, user_info: AuthUserInfo, auth_resource: AuthResource, auth_permission: AuthPermission) -> bool:
+    def has_permission(self, user_info: AuthUserInfo, auth_resource: AuthResource,
+                       auth_permission: AuthPermission) -> bool:
         user_permissions = user_info.permissions.get(auth_resource.value, [])
         if auth_permission.value not in user_permissions:
-            log.error(f"User {user_info.id} does not have permission to access {auth_resource.value} with {auth_permission.value}")
+            log.error(
+                f"User {user_info.id} does not have permission to access {auth_resource.value} with {auth_permission.value}")
             return False
         return True
 
@@ -131,8 +133,10 @@ class KeycloakAuthHandlerConfig(AuthHandlerConfig):
     realm: str = Field(..., description="The realm to use.")
     client_id: str = Field(..., description="The client ID to use.")
     client_secret: str = Field(..., description="The client secret to use.")
-    user_mapping: Dict[str, str] = Field(..., description="The mapping of user data from the token to the user model.",  extra={"type": "TextArea"})
-    permission_mapping: Dict[str, Any] = Field(..., description="The mapping of Keycloak roles to Cat permissions.",  extra={"type": "TextArea"})
+    user_mapping: Dict[str, str] = Field(..., description="The mapping of user data from the token to the user model.",
+                                         extra={"type": "TextArea"})
+    permission_mapping: Dict[str, Any] = Field(..., description="The mapping of Keycloak roles to Cat permissions.",
+                                               extra={"type": "TextArea"})
 
     model_config = ConfigDict(
         json_schema_extra={
